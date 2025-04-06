@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="theme-switch">
+            <button onclick="toggleTheme()">Сменить тему</button>
+        </div>
+        
+        <div class="profile">
+            <h2>Профиль</h2>
+            <p>Пользователь: <span id="username"></span></p>
+            
+            <button onclick="fetchData()">Обновить данные</button>
+            <div id="data"></div>
+            
+            <button onclick="logout()">Выйти</button>
+        </div>
+    </div>
+    <script>
+        // Проверка авторизации
+        async function checkAuth() {
+            const response = await fetch('/profile');
+            if (!response.ok) {
+                window.location.href = '/';
+            } else {
+                const data = await response.json();
+                document.getElementById('username').textContent = data.username;
+            }
+        }
+
+        // Получение данных
+        async function fetchData() {
+            const response = await fetch('/data');
+            const data = await response.json();
+            document.getElementById('data').textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Выход
+        async function logout() {
+            await fetch('/logout', { method: 'POST' });
+            window.location.href = '/';
+        }
+
+        // Инициализация
+        checkAuth();
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
